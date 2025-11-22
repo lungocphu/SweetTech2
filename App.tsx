@@ -186,7 +186,7 @@ const App: React.FC = () => {
               
               <label className="flex flex-col items-center justify-center p-4 rounded-xl border border-dashed border-gray-300 hover:bg-pink-50 hover:border-pink-300 cursor-pointer transition-all group">
                 <Upload className="w-6 h-6 text-gray-400 group-hover:text-pink-500 mb-2" />
-                <span className="text-xs font-medium text-gray-500 group-hover:text-pink-600">{file && file.name ? file.name.slice(0,10) + '...' : t.uploadLabel}</span>
+                <span className="text-xs font-medium text-gray-500 group-hover:text-pink-600">{file?.name ? file.name.slice(0,10) + '...' : t.uploadLabel}</span>
                 <input type="file" accept="image/*,audio/*" className="hidden" onChange={handleFileChange} />
               </label>
 
@@ -317,7 +317,7 @@ const App: React.FC = () => {
               )}
 
               {/* Insights Content (Deferred) */}
-              {insightsData && insightsData.competitors && (
+              {insightsData && insightsData.competitors && profileData && (
                 <>
                   {/* 2. Radar Chart & Benchmarking */}
                   <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 printable-section animate-fade-in">
@@ -325,7 +325,7 @@ const App: React.FC = () => {
                       {insightsData.radarChart && <RadarChartComponent data={insightsData.radarChart} />}
                     </div>
                     <div className="lg:col-span-2">
-                      <CompetitorComparison profile={profileData} competitors={insightsData.competitors} language={language} />
+                      <CompetitorComparison profile={profileData!} competitors={insightsData.competitors} language={language} />
                     </div>
                   </div>
 

@@ -1,8 +1,7 @@
-
 import React from 'react';
 import { ProductProfile, Competitor, Language } from '../types';
 import { TRANSLATIONS } from '../constants';
-import { TrendingUp, TrendingDown, DollarSign, Activity, Droplet } from 'lucide-react';
+import { DollarSign, Activity, Droplet } from 'lucide-react';
 
 interface Props {
   profile: ProductProfile;
@@ -14,6 +13,8 @@ interface Props {
 type MergedProduct = Partial<ProductProfile> & Partial<Competitor> & {
   isMain: boolean;
   name: string;
+  // Allow loose access for combined properties during rendering
+  [key: string]: any;
 };
 
 export const CompetitorComparison: React.FC<Props> = ({ profile, competitors, language }) => {
@@ -24,12 +25,6 @@ export const CompetitorComparison: React.FC<Props> = ({ profile, competitors, la
     // Extract first number found
     const match = str.match(/[\d.]+/);
     return match ? parseFloat(match[0]) : 0;
-  };
-
-  const getUnit = (str: string): string => {
-    if (!str) return '';
-    const match = str.match(/[a-zA-Z%]+/);
-    return match ? match[0] : '';
   };
 
   // Prepare data for comparison
@@ -43,8 +38,8 @@ export const CompetitorComparison: React.FC<Props> = ({ profile, competitors, la
     { 
       key: 'price', 
       label: t.tableHeaders.price, 
-      getValue: (p: any) => parseValue(p.price || p.pricePer100g),
-      getDisplay: (p: any) => p.price || p.pricePer100g,
+      getValue: (p: MergedProduct) => parseValue(p.price || p.pricePer100g),
+      getDisplay: (p: MergedProduct) => p.price || p.pricePer100g,
       color: 'bg-green-500',
       icon: <DollarSign className="w-4 h-4 text-green-600" />
     },
@@ -52,8 +47,8 @@ export const CompetitorComparison: React.FC<Props> = ({ profile, competitors, la
       key: 'energy', 
       label: 'Energy', 
       subLabel: '(kcal/100g)',
-      getValue: (p: any) => parseValue(p.nutrition?.energy || p.specs?.energy),
-      getDisplay: (p: any) => p.nutrition?.energy || p.specs?.energy,
+      getValue: (p: MergedProduct) => parseValue(p.nutrition?.energy),
+      getDisplay: (p: MergedProduct) => p.nutrition?.energy,
       color: 'bg-blue-500',
       icon: <Activity className="w-4 h-4 text-blue-600" />
     },
@@ -61,8 +56,8 @@ export const CompetitorComparison: React.FC<Props> = ({ profile, competitors, la
       key: 'sugar', 
       label: 'Sugar',
       subLabel: '(g/100g)',
-      getValue: (p: any) => parseValue(p.nutrition?.sugar),
-      getDisplay: (p: any) => p.nutrition?.sugar,
+      getValue: (p: MergedProduct) => parseValue(p.nutrition?.sugar),
+      getDisplay: (p: MergedProduct) => p.nutrition?.sugar,
       color: 'bg-pink-500',
       icon: <Droplet className="w-4 h-4 text-pink-600" />
     },
@@ -70,8 +65,8 @@ export const CompetitorComparison: React.FC<Props> = ({ profile, competitors, la
       key: 'fat', 
       label: 'Fat',
       subLabel: '(g/100g)',
-      getValue: (p: any) => parseValue(p.nutrition?.fat),
-      getDisplay: (p: any) => p.nutrition?.fat,
+      getValue: (p: MergedProduct) => parseValue(p.nutrition?.fat),
+      getDisplay: (p: MergedProduct) => p.nutrition?.fat,
       color: 'bg-yellow-500',
       icon: <Droplet className="w-4 h-4 text-yellow-600" />
     }
@@ -112,7 +107,8 @@ export const CompetitorComparison: React.FC<Props> = ({ profile, competitors, la
             {/* Visual Metric Rows */}
             {metrics.map((metric) => {
               // Find max value for this metric to calculate bar width
-              const maxValue = Math.max(...allProducts.map(p => metric.getValue(p)));
+              const values = allProducts.map(p => metric.getValue(p));
+              const maxValue = Math.max(...values, 0.1); // Avoid division by zero
               
               return (
                 <tr key={metric.key}>
@@ -128,7 +124,7 @@ export const CompetitorComparison: React.FC<Props> = ({ profile, competitors, la
                   {allProducts.map((p, idx) => {
                     const val = metric.getValue(p);
                     const displayVal = metric.getDisplay(p);
-                    const percent = maxValue > 0 ? (val / maxValue) * 100 : 0;
+                    const percent = (val / maxValue) * 100;
 
                     return (
                       <td key={idx} className={`py-4 px-4 align-top ${p.isMain ? 'bg-pink-50/30' : ''}`}>
@@ -160,8 +156,8 @@ export const CompetitorComparison: React.FC<Props> = ({ profile, competitors, la
                        <div key={k}><span className="capitalize font-medium">{k}:</span> {v as string}</div>
                      )) : (p.specs ? 
                         <>
-                          <div><span className="font-medium">Texture:</span> {p.specs.texture}</div>
-                          <div><span className="font-medium">Flavor:</span> {p.specs.flavorProfile}</div>
+                          <div><span className="font-medium">Texture:</span> {p.specs?.texture}</div>
+                          <div><span className="font-medium">Flavor:</span> {p.specs?.flavorProfile}</div>
                         </> : '-'
                      )}
                    </div>
