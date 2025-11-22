@@ -1,11 +1,31 @@
-<div align="center">
+# SweetTech R&D Mate (Python App)
 
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+This is the standalone Python version of the SweetTech R&D Mate, built with Streamlit and Google Gemini.
 
-  <h1>Built with AI Studio</h2>
+## 1. Installation
 
-  <p>The fastest path from prompt to production with Gemini.</p>
+1.  Ensure you have Python installed (version 3.9 or higher).
+2.  Install the required packages:
 
-  <a href="https://aistudio.google.com/apps">Start building</a>
+```bash
+pip install -r requirements.txt
+```
 
-</div>
+## 2. API Key
+
+You need a Google Gemini API Key.
+- Get one here: [Google AI Studio](https://aistudio.google.com/)
+- You can enter it directly in the app sidebar, or create a `.env` file:
+  ```
+  API_KEY=your_api_key_here
+  ```
+
+## 3. Run the App
+
+Run the following command in your terminal:
+
+```bash
+streamlit run app.py
+```
+
+The application will open in your default web browser.
