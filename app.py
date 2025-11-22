@@ -1,1 +1,2 @@
-�jh��-�榖+Z��b��+��"��+�;(�
+import streamlit as st
+import google.generativeai as genai
