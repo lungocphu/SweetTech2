@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-import streamlit as st
-import google.generativeai as genai
-import pandas as pd
-import plotly.express as px
-import json
-import os
 import React, { useState, useRef, useEffect } from 'react';
 import { 
   Camera, 
